@@ -254,12 +254,181 @@ Este proyecto está bajo la licencia **MIT**. Ver [LICENSE](LICENSE) para más d
 
 ## 📞 Soporte
 
-- **GitHub Issues**: [Reportar problema](https://github.com/yourusername/nubolink-api/issues)
+- **GitHub Issues**: [Reportar problema](https://github.com/Lagunasporte/nuboprotect/issues)
 - **Email**: support@nubolink.com
 - **Discord**: [NuboLink Community](https://discord.gg/nubolink)
 
 ---
 
+
+## 🚀 Production Deployment
+
+### **One-Command Server Setup**
+
+Deploy NuboLink API to a fresh Ubuntu/Debian server with a single command:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/LagunasPorte/nuboprotect/main/setupserver.sh | bash
+```
+
+This script will automatically:
+- ✅ Install Node.js, Nginx, PM2, and all dependencies
+- ✅ Configure SSL certificate with Let's Encrypt
+- ✅ Setup reverse proxy and security headers
+- ✅ Create service user and proper permissions
+- ✅ Configure firewall and Fail2Ban protection
+- ✅ Setup automated daily backups
+- ✅ Initialize database and start services
+
+### **Prerequisites**
+
+- Fresh Ubuntu 20.04+ or Debian 11+ server
+- Root access or sudo privileges  
+- Domain name pointing to your server IP
+- Email address for SSL certificate
+
+### **What You'll Need**
+
+The script will ask for:
+1. **Domain name** (e.g., `api.nubolink.com`)
+2. **Email address** (for Let's Encrypt SSL)
+3. **GitHub repository URL** (optional, defaults to this repo)
+
+### **After Installation**
+
+Your API will be available at:
+- 🌐 **HTTPS URL**: `https://yourdomain.com`
+- 📊 **Health Check**: `https://yourdomain.com/health`
+- 📚 **API Docs**: `https://yourdomain.com/api`
+
+### **Test User Credentials**
+- **Email**: `test@nubolink.com`
+- **Password**: `TestPassword123!`
+
+⚠️ **Remember to change the test user password in production!**
+
+### **Management Commands**
+
+```bash
+# Check application status
+sudo -u nubolink pm2 status
+
+# View logs
+sudo -u nubolink pm2 logs
+
+# Restart application
+sudo -u nubolink pm2 restart nubolink-api
+
+# Reload Nginx
+sudo systemctl reload nginx
+
+# Check SSL certificate
+sudo certbot certificates
+```
+
+### **File Locations**
+
+- **Project**: `/opt/nubolink-api/`
+- **Logs**: `/opt/nubolink-api/logs/`
+- **Backups**: `/opt/nubolink-api/backups/`
+- **Environment**: `/opt/nubolink-api/.env`
+- **Nginx Config**: `/etc/nginx/sites-available/nubolink-api`
+
+### **Security Features**
+
+- 🔒 **SSL/TLS**: Automatic HTTPS with Let's Encrypt
+- 🛡️ **Firewall**: UFW configured (SSH, HTTP, HTTPS only)
+- 🚫 **Fail2Ban**: Protection against brute force attacks
+- 🔐 **Rate Limiting**: Nginx rate limiting (10 req/s)
+- 👤 **Service User**: Runs as dedicated `nubolink` user
+- 📝 **Security Headers**: HSTS, XSS protection, etc.
+
+### **Automated Backups**
+
+- 📅 **Daily**: Database and .env backups at 2 AM
+- 🗜️ **Compression**: Old backups automatically compressed
+- 🔄 **Retention**: 30 days retention policy
+- 📍 **Location**: `/opt/nubolink-api/backups/`
+
+### **Manual Installation**
+
+If you prefer manual installation, follow these steps:
+
+<details>
+<summary>Click to expand manual installation steps</summary>
+
+1. **Update system and install Node.js**
+   ```bash
+   sudo apt update && sudo apt upgrade -y
+   curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+   sudo apt install -y nodejs nginx git
+   ```
+
+2. **Clone repository**
+   ```bash
+   sudo mkdir -p /opt/nubolink-api
+   sudo git clone https://github.com/yourusername/nubolink-api.git /opt/nubolink-api
+   cd /opt/nubolink-api
+   ```
+
+3. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+4. **Configure environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configurations
+   nano .env
+   ```
+
+5. **Initialize application**
+   ```bash
+   npm run setup
+   ```
+
+6. **Start with PM2**
+   ```bash
+   npm install -g pm2
+   pm2 start server.js --name nubolink-api
+   pm2 startup
+   pm2 save
+   ```
+
+7. **Configure Nginx** (see setupserver.sh for full config)
+8. **Setup SSL with Certbot**
+9. **Configure firewall and security**
+
+</details>
+
+### **Troubleshooting**
+
+**API not responding:**
+```bash
+sudo -u nubolink pm2 logs nubolink-api
+sudo systemctl status nginx
+```
+
+**SSL issues:**
+```bash
+sudo certbot renew --dry-run
+sudo nginx -t
+```
+
+**Database issues:**
+```bash
+ls -la /opt/nubolink-api/database/
+sudo -u nubolink sqlite3 /opt/nubolink-api/database/nubolink.sqlite ".tables"
+```
+
+**Permission issues:**
+```bash
+sudo chown -R nubolink:nubolink /opt/nubolink-api
+```
+
+For more help, check the [Issues](https://github.com/Lagunasporte/nuboprotect/issues) page or create a new issue.
+
 **Hecho con ❤️ por el equipo NuboLink**
 
-> 💡 **Tip**: Para la aplicación iOS companion, visita [NuboProtect iOS](https://github.com/yourusername/nuboprotect-ios)
+> 💡 **Tip**: Para la aplicación iOS companion, visita [NuboProtect iOS](https://github.com/Lagunasporte/nuboprotect-ios)
